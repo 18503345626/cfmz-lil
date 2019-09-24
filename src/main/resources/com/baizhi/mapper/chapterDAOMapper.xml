@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.baizhi.dao.ChapterDAO">
+
+    <select id="selectAll" resultType="Chapter">
+        select * from chapter where album_id=#{albumId} limit ${(page-1)*rows},#{rows}
+    </select>
+
+    <select id="selectCount" resultType="Integer">
+        select count(*) from chapter where album_id=#{albumId}
+    </select>
+    <insert id="insertOne">
+        insert into chapter(id,name,up_date,album_id) values(#{id},#{name},#{up_date},#{album_id})
+    </insert>
+
+    <update id="updateOne">
+        update chapter
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="url!=null and url!=''">
+                url=#{url},
+            </if>
+            <if test="sizes!=null and sizes!=''">
+                sizes=#{sizes},
+            </if>
+            <if test="duration!=null and duration!=''">
+                duration=#{duration}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteById">
+        delete from chapter where id=#{id}
+    </delete>
+</mapper>

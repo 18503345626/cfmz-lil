@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.baizhi.dao.UserDAO">
+
+    <sql id="all">
+         id,avatar,phone,password,status,name,law_name,sex,city,sign,crea_date,guru_id
+    </sql>
+
+    <select id="selectAll" resultType="User">
+        select <include refid="all" /> from user limit ${(page-1)*rows},#{rows}
+    </select>
+    <select id="searchAll" resultType="User">
+        select <include refid="all" /> from user
+    </select>
+    <select id="selectCount" resultType="Integer">
+        select count(*) from user
+    </select>
+
+    <insert id="insertOne">
+        insert into user values(#{id},#{avatar},#{phone},#{password},#{status},#{name},#{law_name},#{sex},#{city},#{sign},#{crea_date},#{guru_id})
+    </insert>
+
+    <update id="updateOne">
+        update user
+        <set>
+            <if test="avatar!=null and avatar!=''">
+                avatar=#{avatar},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="law_name!=null">
+                law_name=#{law_name},
+            </if>
+            <if test="sex!=null">
+                sex=#{sex},
+            </if>
+            <if test="city!=null">
+                city=#{city},
+            </if>
+            <if test="sign!=null">
+                sign=#{sign},
+            </if>
+            <if test="guru_id!=null">
+                guru_id=#{guru_id}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from user where id=#{id}
+    </delete>
+    <select id="selectById" resultType="User">
+        select <include refid="all" /> from user where id=#{rowId}
+    </select>
+    <resultMap id="resEcharts" type="UserEcharts">
+        <result column="value" property="count"></result>
+        <result column="month" property="month"></result>
+    </resultMap>
+    <select id="selectBySex" resultMap="resEcharts">
+        select count(*) as value,crea_date as month from user where sex=#{sex} GROUP BY crea_date
+    </select>
+
+    <select id="selectBySexAndMonth" resultType="Integer">
+         select count(*) as value from user where sex=#{sex} and crea_date like '%${month}%'
+    </select>
+
+    <select id="selectGroupByCity" resultType="City">
+        select city as name,count(*) as value from user where sex=#{sex} group by city
+    </select>
+</mapper>
